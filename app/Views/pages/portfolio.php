@@ -29,7 +29,7 @@
             <article class="card icon-card">
                 <span class="svc-icon sm"><?= st_icon('layers') ?></span>
                 <div>
-                    <span class="chip"><?= esc($item['label']) ?> · <?= esc($item['tag']) ?></span>
+                    <span class="chip"><?= esc($item['tag']) ?></span>
                     <h3><?= esc($item['title']) ?></h3>
                     <p><?= esc($item['summary']) ?></p>
                 </div>

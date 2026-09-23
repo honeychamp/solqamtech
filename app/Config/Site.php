@@ -286,49 +286,41 @@ class Site extends BaseConfig
         [
             'title'  => 'Storefront built for browsing and checkout',
             'tag'    => 'Web + CRO',
-            'label'  => 'Sample',
             'summary'=> 'A product page, trust, and checkout flow designed to make a catalog easier to browse and measure.',
         ],
         [
             'title'  => 'Amazon listing structure',
             'tag'    => 'Amazon',
-            'label'  => 'Sample',
             'summary'=> 'Title, bullets, backend terms, and A+ content planning organized around how shoppers search in the category.',
         ],
         [
             'title'  => 'Landing page for paid campaigns',
             'tag'    => 'Paid + Web',
-            'label'  => 'Sample',
             'summary'=> 'A campaign landing page with a clear offer, form tracking, and a simple follow-up workflow.',
         ],
         [
             'title'  => 'Brand identity starter kit',
             'tag'    => 'Branding',
-            'label'  => 'Sample',
             'summary'=> 'Logo direction, color system, and social templates that keep a young brand consistent across channels.',
         ],
         [
             'title'  => 'Clinic website for consultation requests',
             'tag'    => 'Web + Local',
-            'label'  => 'Sample',
             'summary'=> 'Service pages, proof, hours, and a form path designed so a visitor can request a consultation without hunting.',
         ],
         [
             'title'  => 'Restaurant site with menu and location',
             'tag'    => 'Hospitality',
-            'label'  => 'Sample',
             'summary'=> 'A compact site structure for menus, outlets, and inquiry, with creative that can reuse on social.',
         ],
         [
             'title'  => 'Amazon PPC structure after listing cleanup',
             'tag'    => 'Amazon + Ads',
-            'label'  => 'Sample',
             'summary'=> 'Campaign groups, search-term review, and negatives planned after title, bullets, and images are coherent.',
         ],
         [
             'title'  => 'SEO foundation for a new service site',
             'tag'    => 'SEO',
-            'label'  => 'Sample',
             'summary'=> 'Information architecture, on-page templates, and technical checks before any ranking claims are discussed.',
         ],
     ];
