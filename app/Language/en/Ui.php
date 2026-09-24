@@ -273,7 +273,6 @@ return [
         'published'   => 'Published',
         'reading'     => 'Reading time',
         'topic'       => 'Topic',
-        'sample'      => 'Sample',
         'breadcrumb'  => 'Breadcrumb',
         'primary'     => 'Primary',
     ],

@@ -273,7 +273,6 @@ return [
         'published'   => 'تاريخ النشر',
         'reading'     => 'وقت القراءة',
         'topic'       => 'الموضوع',
-        'sample'      => 'عينة',
         'breadcrumb'  => 'مسار التنقل',
         'primary'     => 'رئيسي',
     ],

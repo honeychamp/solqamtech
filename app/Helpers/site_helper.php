@@ -128,6 +128,21 @@ if (! function_exists('video_url')) {
     }
 }
 
+if (! function_exists('video_poster')) {
+    function video_poster(string $file): string
+    {
+        $name = pathinfo($file, PATHINFO_FILENAME) . '.jpg';
+        $rel  = 'assets/img/video/' . $name;
+        $path = FCPATH . $rel;
+
+        if (! is_file($path)) {
+            return '';
+        }
+
+        return base_url($rel) . '?v=' . filemtime($path);
+    }
+}
+
 if (! function_exists('st_icon')) {
     function st_icon(string $name): string
     {

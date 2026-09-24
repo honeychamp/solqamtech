@@ -14,11 +14,12 @@ $actions = $actions ?? [];
 $arrow   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
 $hasPanel = $panel !== '' || $facts !== [] || $chips !== [];
 $class    = 'page-hero' . ($compact ? ' is-compact' : '') . ($hasPanel ? ' has-panel' : ' is-simple');
-$heroSrc  = $video !== '' ? video_url($video) : '';
+$heroSrc    = $video !== '' ? video_url($video) : '';
+$heroPoster = $video !== '' ? video_poster($video) : '';
 ?>
 <<?= $tag ?> class="<?= esc($class) ?>">
     <?php if ($heroSrc !== ''): ?>
-        <video class="page-hero-video" muted loop playsinline preload="none" data-src="<?= esc($heroSrc) ?>"></video>
+        <video class="page-hero-video" muted loop playsinline autoplay preload="none"<?= $heroPoster !== '' ? ' poster="' . esc($heroPoster) . '"' : '' ?> data-src="<?= esc($heroSrc) ?>"></video>
     <?php endif; ?>
     <div class="page-hero-scrim" aria-hidden="true"></div>
     <div class="container page-hero-inner">

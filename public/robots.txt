@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://localhost/Solqam/public/sitemap.xml
+Sitemap: https://solqamtech.com/sitemap.xml

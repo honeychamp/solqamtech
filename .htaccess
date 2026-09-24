@@ -1,3 +1,16 @@
-RewriteEngine On
-RewriteRule ^$ public/ [L]
-RewriteRule ^(.*)$ public/$1 [L]
+<IfModule mod_authz_core.c>
+	<Files ".env">
+		Require all denied
+	</Files>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# Block direct access to app files if the host root is this folder
+	RewriteRule ^(\.env|app|system|writable|vendor|tests|spark)(/|$) - [F,L]
+
+	# Send visitors into public/ (correct CodeIgniter web root)
+	RewriteRule ^$ public/ [L]
+	RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

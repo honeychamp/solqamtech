@@ -11,20 +11,24 @@ Options -Indexes
 	Options +FollowSymlinks
 	RewriteEngine On
 
-	# If you installed CodeIgniter in a subfolder, you will need to
-	# change the following line to match the subfolder you need.
-	# http://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewritebase
-	RewriteBase /Solqam/public/
+	# Leave RewriteBase unset so this works as /Solqam/public/ on XAMPP
+	# and as the domain root when the host document root is public/.
+
+	# HTTPS on the live domain (skip local XAMPP)
+	RewriteCond %{HTTPS} !=on
+	RewriteCond %{HTTP:X-Forwarded-Proto} !https
+	RewriteCond %{HTTP_HOST} !^localhost [NC]
+	RewriteCond %{HTTP_HOST} !^127\.0\.0\.1
+	RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+	# www.solqamtech.com -> solqamtech.com
+	RewriteCond %{HTTP_HOST} ^www\.solqamtech\.com$ [NC]
+	RewriteRule ^ https://solqamtech.com%{REQUEST_URI} [R=301,L]
 
 	# Redirect Trailing Slashes...
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_URI} (.+)/$
 	RewriteRule ^ %1 [L,R=301]
-
-	# Rewrite "www.example.com -> example.com"
-	RewriteCond %{HTTPS} !=on
-	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-	RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
 
 	# Checks to see if the user is attempting to access a valid file,
 	# such as an image or css document, if this isn't true it sends the

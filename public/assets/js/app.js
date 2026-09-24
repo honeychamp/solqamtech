@@ -7,10 +7,6 @@
   const modal = document.getElementById("quote-modal");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  const saveData = !!(navigator.connection && navigator.connection.saveData);
-  const slowNet = /^(slow-2g|2g)$/.test((navigator.connection && navigator.connection.effectiveType) || "");
-  const smallScreen = window.matchMedia("(max-width: 980px)").matches;
-  const skipHeavy = reduceMotion || saveData || slowNet || smallScreen;
 
   const onScroll = () => {
     const y = window.scrollY;
@@ -222,26 +218,33 @@
       vid.removeAttribute("data-src");
     }
     vid.muted = true;
+    vid.loop = true;
     vid.playsInline = true;
+    vid.setAttribute("muted", "");
+    vid.setAttribute("loop", "");
     vid.setAttribute("playsinline", "");
+    vid.setAttribute("autoplay", "");
     const tryPlay = () => vid.play().catch(() => {});
     tryPlay();
     vid.addEventListener("canplay", tryPlay, { once: true });
     vid.addEventListener("loadeddata", tryPlay, { once: true });
   };
   const playAmbient = () => {
-    if (skipHeavy) return;
+    if (reduceMotion) return;
     ambientVideos().forEach((vid) => {
+      if (vid.dataset.armed === "1") return;
       if (!vid.dataset.src && !vid.getAttribute("src")) return;
+      vid.dataset.armed = "1";
       if (!("IntersectionObserver" in window)) {
         hydrateVideo(vid);
         return;
       }
       const io = new IntersectionObserver((entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        hydrateVideo(vid);
-        io.disconnect();
-      }, { rootMargin: "80px" });
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) hydrateVideo(vid);
+          else vid.pause();
+        });
+      }, { rootMargin: "40px", threshold: 0.28 });
       io.observe(vid);
     });
   };
@@ -395,7 +398,7 @@
     if (!modal?.classList.contains("is-open")) {
       document.body.style.overflow = "";
     }
-    if (!reduceMotion) playAmbient();
+    playAmbient();
   };
 
   vplayer?.addEventListener("timeupdate", () => {
@@ -504,6 +507,8 @@
       if (!el) return;
       el.muted = true;
       el.loop = false;
+      el.playsInline = true;
+      el.preload = "auto";
     };
 
     const seekIn = (el, clip) => {
@@ -540,7 +545,7 @@
       paintMeta(clip);
       const start = (el) => {
         seekIn(el, clip);
-        if (autoplay && !reduceMotion) el.play().catch(() => setPlaying(false));
+        if (autoplay) el.play().catch(() => setPlaying(false));
         else setPlaying(false);
       };
       if (same) {
@@ -559,21 +564,37 @@
       root.classList.add("is-cutting");
       to.src = clip.src;
       arm(to);
+      try { to.load(); } catch (err) {}
       const finish = () => {
+        if (!cutting) return;
         seekIn(to, clip);
         to.classList.add("is-front");
         to.classList.remove("is-back");
         from.classList.add("is-back");
         from.classList.remove("is-front");
-        from.pause();
+        releasePlayer(from);
         root.classList.remove("is-cutting");
         cutting = false;
-        if (autoplay && !reduceMotion) to.play().catch(() => setPlaying(false));
+        if (autoplay) to.play().catch(() => setPlaying(false));
         else setPlaying(false);
       };
-      const run = () => window.setTimeout(finish, 380);
+      const run = () => window.setTimeout(finish, 220);
       if (to.readyState >= 2) run();
-      else to.addEventListener("loadeddata", run, { once: true });
+      else {
+        to.addEventListener("loadeddata", run, { once: true });
+        to.addEventListener("error", () => {
+          cutting = false;
+          root.classList.remove("is-cutting");
+          if (from) {
+            from.src = clip.src;
+            arm(from);
+            start(from);
+          }
+        }, { once: true });
+        window.setTimeout(() => {
+          if (cutting) run();
+        }, 1800);
+      }
     };
 
     const playOpen = (autoplay = true) => {
@@ -589,26 +610,15 @@
       setPhase("open");
       setPlaying(false);
       if (!autoplay) return;
-      timer = window.setTimeout(() => cutTo(0, true), reduceMotion ? 200 : OPEN_MS);
+      timer = window.setTimeout(() => cutTo(0, true), reduceMotion ? 200 : 420);
     };
 
-    const loadPreview = (preview, clip) => {
-      if (!preview || !clip) return;
-      if (!preview.getAttribute("src")) {
-        preview.src = preview.getAttribute("data-src") || clip.src;
-        preview.removeAttribute("data-src");
-      }
-      preview.muted = true;
-      preview.playsInline = true;
-      preview.setAttribute("playsinline", "");
-    };
-
-    const primeThumbs = () => {
-      thumbs.forEach((thumb) => {
-        const preview = thumb.querySelector("video");
-        const clip = clips[Number(thumb.getAttribute("data-reel-index"))];
-        loadPreview(preview, clip);
-      });
+    const releasePlayer = (el) => {
+      if (!el) return;
+      el.pause();
+      el.removeAttribute("src");
+      el.removeAttribute("poster");
+      try { el.load(); } catch (err) {}
     };
 
     const primeMain = () => {
@@ -623,19 +633,9 @@
     };
 
     thumbs.forEach((thumb) => {
-      const preview = thumb.querySelector("video");
-      const clip = clips[Number(thumb.getAttribute("data-reel-index"))];
-      if (preview && clip) {
-        preview.addEventListener("loadedmetadata", () => seekIn(preview, clip), { once: true });
-      }
       thumb.addEventListener("click", () => {
         cutTo(Number(thumb.getAttribute("data-reel-index")), true);
       });
-      thumb.addEventListener("pointerenter", () => {
-        loadPreview(preview, clip);
-        if (!reduceMotion) preview?.play().catch(() => {});
-      });
-      thumb.addEventListener("pointerleave", () => preview?.pause());
     });
 
     segs.forEach((seg) => {
@@ -710,28 +710,23 @@
     const armReel = () => {
       if (armed) return;
       armed = true;
-      primeThumbs();
       primeMain();
-      if (reduceMotion) cutTo(0, false);
-      else cutTo(0, true);
+      cutTo(0, true);
     };
 
     if ("IntersectionObserver" in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (cutting) return;
           if (entry.isIntersecting) {
             if (!armed) armReel();
-            else if (phase === "clip" && !reduceMotion) {
-              frontEl()?.play().catch(() => {});
-            }
-          } else {
+            else if (phase === "clip" && !cutting) frontEl()?.play().catch(() => {});
+          } else if (!cutting) {
             frontEl()?.pause();
-            thumbs.forEach((thumb) => thumb.querySelector("video")?.pause());
+            backEl()?.pause();
             if (phase === "open" || phase === "end") clearTimer();
           }
         });
-      }, { threshold: 0.2, rootMargin: "120px" });
+      }, { threshold: 0.28, rootMargin: "40px" });
       io.observe(root);
     } else {
       armReel();

@@ -53,8 +53,8 @@ class Site extends BaseConfig
             'caption' => 'Scope, offer, and constraints mapped in the Islamabad office before a page or campaign is built.',
             'file'    => 'office.mp4',
             'tag'     => 'Strategy',
-            'in'      => 1.2,
-            'dur'     => 7.5,
+            'in'      => 0.2,
+            'dur'     => 6.5,
         ],
         [
             'id'      => 'web',
@@ -62,8 +62,8 @@ class Site extends BaseConfig
             'caption' => 'Structure, forms, and tracking reviewed on screen before a site goes live.',
             'file'    => 'web.mp4',
             'tag'     => 'Interface',
-            'in'      => 0.8,
-            'dur'     => 7.5,
+            'in'      => 0.2,
+            'dur'     => 6.5,
         ],
         [
             'id'      => 'commerce',
@@ -71,8 +71,8 @@ class Site extends BaseConfig
             'caption' => 'Product presentation for stores and Amazon listings, with merchandising first.',
             'file'    => 'commerce.mp4',
             'tag'     => 'Catalog',
-            'in'      => 1.0,
-            'dur'     => 7.5,
+            'in'      => 0.2,
+            'dur'     => 6.5,
         ],
         [
             'id'      => 'campaigns',
@@ -80,8 +80,8 @@ class Site extends BaseConfig
             'caption' => 'Paid and organic creative judged against the offer, not empty reach numbers.',
             'file'    => 'campaigns.mp4',
             'tag'     => 'Performance',
-            'in'      => 0.4,
-            'dur'     => 7.5,
+            'in'      => 0.2,
+            'dur'     => 6.5,
         ],
     ];
 

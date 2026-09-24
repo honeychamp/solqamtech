@@ -16,7 +16,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost/Solqam/public/';
+    public string $baseURL = 'https://solqamtech.com/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -29,7 +29,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $allowedHostnames = [];
+    public array $allowedHostnames = ['www.solqamtech.com'];
 
     /**
      * --------------------------------------------------------------------------
@@ -157,7 +157,7 @@ class App extends BaseConfig
      * secure, the user will be redirected to a secure version of the page
      * and the HTTP Strict Transport Security (HSTS) header will be set.
      */
-    public bool $forceGlobalSecureRequests = false;
+    public bool $forceGlobalSecureRequests = true;
 
     /**
      * --------------------------------------------------------------------------
@@ -199,4 +199,22 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        if ($this->isLocalHost()) {
+            $this->baseURL = 'http://localhost/Solqam/public/';
+            $this->forceGlobalSecureRequests = false;
+        }
+    }
+
+    private function isLocalHost(): bool
+    {
+        $host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+        $host = (string) preg_replace('/:\d+$/', '', $host);
+
+        return $host === 'localhost' || $host === '127.0.0.1' || $host === '::1';
+    }
 }

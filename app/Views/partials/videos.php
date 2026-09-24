@@ -8,6 +8,7 @@ foreach ($clips as $i => $clip) {
     $dur = (float) ($clip['dur'] ?? 7.5);
     $playlist[] = [
         'src'     => video_url($clip['file']),
+        'poster'  => video_poster($clip['file']),
         'title'   => $clip['title'],
         'caption' => $clip['caption'],
         'tag'     => $clip['tag'] ?? '',
@@ -51,8 +52,8 @@ $total = str_pad((string) count($playlist), 2, '0', STR_PAD_LEFT);
                 <div class="reel-bezel">
                     <div class="reel-frame">
                         <div class="reel-stack">
-                            <video class="reel-player is-front" muted playsinline preload="none"></video>
-                            <video class="reel-player is-back" muted playsinline preload="none"></video>
+                            <video class="reel-player is-front" muted playsinline preload="metadata"<?= ! empty($first['poster']) ? ' poster="' . esc($first['poster']) . '"' : '' ?>></video>
+                            <video class="reel-player is-back" muted playsinline preload="metadata"></video>
                         </div>
                         <div class="reel-grade" aria-hidden="true"></div>
                         <div class="reel-vignette" aria-hidden="true"></div>
@@ -113,7 +114,9 @@ $total = str_pad((string) count($playlist), 2, '0', STR_PAD_LEFT);
                 <?php foreach ($playlist as $i => $clip): ?>
                     <button type="button" class="reel-thumb<?= $i === 0 ? ' is-on' : '' ?>" data-reel-index="<?= $i ?>">
                         <span class="reel-thumb-media">
-                            <video muted playsinline preload="none" data-src="<?= esc($clip['src']) ?>"></video>
+                            <?php if (! empty($clip['poster'])): ?>
+                                <img src="<?= esc($clip['poster']) ?>" alt="" width="640" height="360" decoding="async" loading="lazy">
+                            <?php endif; ?>
                             <em><?= esc($clip['n']) ?></em>
                             <span class="reel-thumb-time"><?= esc($clip['label']) ?></span>
                         </span>

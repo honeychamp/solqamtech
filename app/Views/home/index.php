@@ -3,6 +3,7 @@
 <?php
 $arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
 $heroSrc = video_url('office.mp4');
+$heroPoster = video_poster('office.mp4');
 $trustCount = $site->proof[2] ?? ['value' => 750, 'suffix' => '+'];
 $trustPeople = [
     ['file' => 'trust-1.jpg', 'alt' => ''],
@@ -15,7 +16,7 @@ $svcCards = $site->homeServices;
 ?>
 
 <section class="hero has-video">
-    <video class="hero-video" muted loop playsinline preload="none" data-src="<?= esc($heroSrc) ?>"></video>
+    <video class="hero-video" muted loop playsinline autoplay preload="none"<?= $heroPoster !== '' ? ' poster="' . esc($heroPoster) . '"' : '' ?> data-src="<?= esc($heroSrc) ?>"></video>
     <div class="hero-scrim" aria-hidden="true"></div>
     <div class="container hero-stage">
         <div class="hero-top">
@@ -61,7 +62,7 @@ $svcCards = $site->homeServices;
         </div>
         <div class="hero-panel">
             <div class="hero-panel-visual">
-                <video class="hero-panel-video" muted loop playsinline preload="none" data-src="<?= esc($heroSrc) ?>"></video>
+                <video class="hero-panel-video" muted loop playsinline autoplay preload="none"<?= $heroPoster !== '' ? ' poster="' . esc($heroPoster) . '"' : '' ?> data-src="<?= esc($heroSrc) ?>"></video>
                 <span class="hero-panel-fade" aria-hidden="true"></span>
                 <button type="button" class="play-btn" data-open-showreel aria-label="<?= esc(t('home.playReel')) ?>">
                     <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5L8 5.5z"/></svg>
